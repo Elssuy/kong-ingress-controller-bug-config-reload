@@ -1,0 +1,25 @@
+apiVersion: k3d.io/v1alpha3 
+kind: Simple
+name: kong-memory-leak 
+servers: 1
+agents: 0
+image: rancher/k3s:v1.20.14-k3s1
+volumes:
+  # Comment if not on btrfs file system 
+  - volume: /dev/mapper:/dev/mapper 
+    nodeFilters:
+      - server:*
+      - agent:*
+ports:
+  - port: 8888:80 
+    nodeFilters:
+      - loadbalancer
+  - port: 8443:443
+    nodeFilters:
+      - loadbalancer
+options:
+  k3s: # options passed on to K3s itself
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters:
+          - server:*
